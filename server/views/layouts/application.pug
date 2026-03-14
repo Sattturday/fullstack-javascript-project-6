@@ -3,46 +3,34 @@ html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1")
-
-    title Task Manager
-
+    title= t('taskManager')
     link(
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
     )
-
-    link(rel="stylesheet" href="/assets/styles.css")
+    link(rel="stylesheet" href=assetPath('styles.css'))
 
   body
-
     nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
       .container
-        a.navbar-brand(href="/") Task Manager
-
-        button.navbar-toggler(
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        )
+        a.navbar-brand(href="/")= t('taskManager')
+        button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav")
           span.navbar-toggler-icon
-
         #navbarNav.collapse.navbar-collapse
           ul.navbar-nav.ms-auto
             li.nav-item
-              a.nav-link(href="/session/new") Login
+              a.nav-link(href="/session/new")= t('login')
             li.nav-item
-              a.nav-link(href="/users/new") Sign Up
+              a.nav-link(href="/users/new")= t('signUp')
             li.nav-item
-              a.nav-link(href="/users") Users
+              a.nav-link(href="/users")= t('users')
             li.nav-item
-              a.nav-link(href="/statuses") Statuses
+              a.nav-link(href="/statuses")= t('statuses')
             li.nav-item
-              a.nav-link(href="/tasks") Tasks
+              a.nav-link(href="/tasks")= t('tasks')
             li.nav-item
-              a.nav-link(href="/labels") Labels
+              a.nav-link(href="/labels")= t('labels')
 
     .container.mt-4
       block content
 
-    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js")
-    script(src="/assets/main.js")
