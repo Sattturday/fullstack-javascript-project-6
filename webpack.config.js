@@ -1,8 +1,6 @@
-// @ts-check
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-
-const mode = process.env.NODE_ENV || 'development';
+const mode = process.env.NODE_ENV || 'development'
 
 export default {
   mode,
@@ -15,4 +13,4 @@ export default {
     ],
   },
   plugins: [new MiniCssExtractPlugin()],
-};
+}
