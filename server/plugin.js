@@ -21,7 +21,7 @@ const setupLocalization = async () => {
   })
 }
 
-export default async (app, opts) => {
+export default async (app, _opts) => {
   await setupLocalization()
 
   await app.register(fastifyStatic, {
@@ -34,14 +34,14 @@ export default async (app, opts) => {
     root: path.resolve(__dirname, 'views'),
     includeViewExtension: true,
     defaultContext: {
-      t: (key) => i18next.t(key),
-      assetPath: (filename) => `/assets/${filename}`,
+      t: key => i18next.t(key),
+      assetPath: filename => `/assets/${filename}`,
     },
   })
 
   app.addHook('preHandler', async (req, reply) => {
     reply.locals = {
-      t: (key) => i18next.t(key),
+      t: key => i18next.t(key),
     }
   })
 

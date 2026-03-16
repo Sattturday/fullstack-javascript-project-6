@@ -1,5 +1,5 @@
-import { config as dotenvConfig } from 'dotenv';
-dotenvConfig();
+import { config as dotenvConfig } from 'dotenv'
+dotenvConfig()
 
 export default {
   development: {
@@ -12,4 +12,4 @@ export default {
       directory: './server/seeds',
     },
   },
-};
+}
