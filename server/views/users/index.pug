@@ -1,0 +1,27 @@
+extends ../layouts/application.pug
+
+block header
+  = t('views.users.title')
+
+block content
+  table.table.table-striped
+    thead
+      tr
+        th= t('views.users.id')
+        th= t('views.users.fullName')
+        th= t('views.users.email')
+        th= t('views.users.createdAt')
+        if reply.locals.isAuthenticated()
+          th= t('views.users.actions')
+    tbody
+      each user in users
+        tr
+          td= user.id
+          td= `${user.firstName} ${user.lastName}`
+          td= user.email
+          td= formatDate(user.created_at)
+          if reply.locals.isAuthenticated()
+            td
+              .d-inline-flex.gap-2
+                a.btn.btn-sm.btn-primary(href=route('editUser', { id: user.id }), style="width: 5rem")= t('views.users.edit.submit')
+                +buttonTo(route('deleteUser', { id: user.id }), 'delete')(class="btn btn-sm btn-danger" style="width: 5rem" value=t('views.users.delete'))
