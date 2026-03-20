@@ -1,13 +1,13 @@
-import bcrypt from 'bcrypt'
+import encrypt from '../lib/secure.cjs'
 
 export async function seed(knex) {
   await knex('users').del()
 
-  const password = await bcrypt.hash('123', 10)
+  const passwordDigest = encrypt('123')
 
   await knex('users').insert([
-    { firstName: 'Alice', lastName: 'Smith', email: 'alice@example.com', password },
-    { firstName: 'Bob', lastName: 'Johnson', email: 'bob@example.com', password },
-    { firstName: 'Charlie', lastName: 'Brown', email: 'charlie@example.com', password },
+    { firstName: 'Alice', lastName: 'Smith', email: 'alice@example.com', passwordDigest },
+    { firstName: 'Bob', lastName: 'Johnson', email: 'bob@example.com', passwordDigest },
+    { firstName: 'Charlie', lastName: 'Brown', email: 'charlie@example.com', passwordDigest },
   ])
 }

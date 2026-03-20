@@ -1,49 +1,140 @@
-import { fileURLToPath } from 'node:url'
-import path from 'node:path'
-import pug from 'pug'
-
+import { fileURLToPath } from 'url'
+import path from 'path'
 import fastifyStatic from '@fastify/static'
 import fastifyView from '@fastify/view'
+import fastifyFormbody from '@fastify/formbody'
+import fastifySecureSession from '@fastify/secure-session'
+import fastifyPassport from '@fastify/passport'
+import fastifySensible from '@fastify/sensible'
+import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes'
+import fastifyMethodOverride from 'fastify-method-override'
+import qs from 'qs'
+import Pug from 'pug'
+import Knex from 'knex'
+import { Model } from 'objection'
 import i18next from 'i18next'
 
-import en from './locales/en.js'
 import ru from './locales/ru.js'
+import en from './locales/en.js'
+import addRoutes from './routes/index.js'
+import getHelpers from './helpers/index.js'
+import * as knexConfig from '../knexfile.js'
+import User from './models/User.cjs'
+import FormStrategy from './lib/passportStrategies/FormStrategy.js'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const __dirname = fileURLToPath(path.dirname(import.meta.url))
 
-export const options = { exposeHeadRoutes: false }
+const mode = process.env.NODE_ENV || 'development'
 
-const setupLocalization = async () => {
-  await i18next.init({
-    lng: 'en',
-    fallbackLng: 'ru',
-    resources: { en, ru },
+const setUpViews = (app) => {
+  app.register(fastifyView, {
+    engine: {
+      pug: Pug,
+    },
+    includeViewExtension: true,
+    defaultContext: {
+      ...getHelpers(app),
+      assetPath: filename => `/assets/${filename}`,
+    },
+    templates: path.join(__dirname, '..', 'server', 'views'),
+  })
+
+  app.decorateReply('render', function render(viewPath, locals) {
+    this.view(viewPath, { ...locals, reply: this })
   })
 }
 
-export default async (app, _opts) => {
-  await setupLocalization()
-
-  await app.register(fastifyStatic, {
-    root: path.resolve(__dirname, '..', 'dist'),
+const setUpStaticAssets = (app) => {
+  const pathPublic = path.join(__dirname, '..', 'dist')
+  app.register(fastifyStatic, {
+    root: pathPublic,
     prefix: '/assets/',
   })
+}
 
-  await app.register(fastifyView, {
-    engine: { pug },
-    root: path.resolve(__dirname, 'views'),
-    includeViewExtension: true,
-    defaultContext: {
+const setupLocalization = async () => {
+  await i18next
+    .init({
+      lng: 'ru',
+      fallbackLng: 'en',
+      resources: {
+        ru,
+        en,
+      },
+    })
+}
+
+const addHooks = (app) => {
+  app.addHook('preHandler', async (req, reply) => {
+    reply.locals = {
+      isAuthenticated: () => req.isAuthenticated(),
+      currentUser: req.user,
       t: key => i18next.t(key),
-      assetPath: filename => `/assets/${filename}`,
+      flash: reply.flash ? reply.flash() : {},
+    }
+  })
+}
+
+const registerPlugins = async (app) => {
+  await app.register(fastifySensible)
+  await app.register(fastifyReverseRoutes)
+  await app.register(fastifyFormbody, { parser: qs.parse })
+
+  await app.register(fastifySecureSession, {
+    secret: process.env.SESSION_KEY || 'a-secret-with-minimum-length-of-32',
+    cookie: {
+      path: '/',
     },
   })
 
-  app.addHook('preHandler', async (req, reply) => {
-    reply.locals = {
-      t: key => i18next.t(key),
-    }
+  fastifyPassport.registerUserDeserializer(
+    user => app.objection.models.user.query().findById(user.id),
+  )
+  fastifyPassport.registerUserSerializer(user => Promise.resolve(user))
+  fastifyPassport.use(new FormStrategy('form', app))
+  await app.register(fastifyPassport.initialize())
+  await app.register(fastifyPassport.secureSession())
+  await app.decorate('fp', fastifyPassport)
+  app.decorate('authenticate', (...args) => fastifyPassport.authenticate(
+    'form',
+    {
+      failureRedirect: app.reverse('newSession'),
+      failureFlash: i18next.t('flash.authError'),
+    },
+  // @ts-ignore
+  )(...args))
+
+  await app.register(fastifyMethodOverride)
+}
+
+const setupDb = (app) => {
+  const config = knexConfig[mode]
+  const knex = Knex(config)
+  Model.knex(knex)
+
+  app.decorate('objection', {
+    knex,
+    models: { user: User },
   })
 
-  app.get('/', async (req, reply) => reply.view('index'))
+  app.addHook('onClose', async () => {
+    await knex.destroy()
+  })
+}
+
+export const options = {
+  exposeHeadRoutes: false,
+}
+
+export default async (app, _options) => {
+  setupDb(app)
+  await registerPlugins(app)
+
+  await setupLocalization()
+  setUpViews(app)
+  setUpStaticAssets(app)
+  addRoutes(app)
+  addHooks(app)
+
+  return app
 }
