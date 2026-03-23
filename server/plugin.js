@@ -21,6 +21,7 @@ import addRoutes from './routes/index.js'
 import getHelpers from './helpers/index.js'
 import User from './models/User.cjs'
 import TaskStatus from './models/TaskStatus.cjs'
+import Task from './models/Task.cjs'
 import FormStrategy from './lib/passportStrategies/FormStrategy.js'
 
 const __dirname = fileURLToPath(path.dirname(import.meta.url))
@@ -114,7 +115,7 @@ const setupDb = (app) => {
 
   app.decorate('objection', {
     knex,
-    models: { user: User, taskStatus: TaskStatus },
+    models: { user: User, taskStatus: TaskStatus, task: Task },
   })
 
   app.addHook('onClose', async () => {

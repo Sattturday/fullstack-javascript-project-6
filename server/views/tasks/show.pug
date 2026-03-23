@@ -1,0 +1,25 @@
+extends ../layouts/application.pug
+
+block content
+  h1.mt-5.mb-4= task.name
+
+  table.table
+    tbody
+      tr
+        td.fw-bold= t('views.tasks.name')
+        td= task.name
+      tr
+        td.fw-bold= t('views.tasks.status')
+        td= task.status ? task.status.name : ''
+      tr
+        td.fw-bold= t('views.tasks.creator')
+        td= task.creator ? `${task.creator.firstName} ${task.creator.lastName}` : ''
+      tr
+        td.fw-bold= t('views.tasks.executor')
+        td= task.executor ? `${task.executor.firstName} ${task.executor.lastName}` : ''
+      tr
+        td.fw-bold= t('views.tasks.createdAt')
+        td= formatDate(task.created_at)
+
+  if reply.locals.isAuthenticated()
+    a.btn.btn-primary(href=route('editTask', { id: task.id }))= t('views.tasks.show.edit')

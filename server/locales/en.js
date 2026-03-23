@@ -39,12 +39,27 @@ export default {
           hasTasks: 'Cannot delete status linked to a task',
         },
       },
+      tasks: {
+        create: {
+          success: 'Task successfully created',
+          error: 'Failed to create task',
+        },
+        edit: {
+          success: 'Task successfully updated',
+          error: 'Failed to update task',
+        },
+        delete: {
+          success: 'Task successfully deleted',
+          accessError: 'Only the creator can delete this task',
+        },
+      },
       authError: 'Access denied! Please login',
     },
     layouts: {
       application: {
         users: 'Users',
         statuses: 'Statuses',
+        tasks: 'Tasks',
         signIn: 'Login',
         signUp: 'Register',
         signOut: 'Logout',
@@ -94,6 +109,34 @@ export default {
         },
         edit: {
           title: 'Edit Status',
+          submit: 'Update',
+          delete: 'Delete',
+        },
+      },
+      tasks: {
+        id: 'ID',
+        name: 'Name',
+        description: 'Description',
+        status: 'Status',
+        creator: 'Creator',
+        executor: 'Executor',
+        createdAt: 'Created At',
+        actions: 'Actions',
+        index: {
+          title: 'Tasks',
+          createLink: 'Create Task',
+          edit: 'Edit',
+          delete: 'Delete',
+        },
+        new: {
+          title: 'Create Task',
+          submit: 'Create',
+        },
+        show: {
+          edit: 'Edit',
+        },
+        edit: {
+          title: 'Edit Task',
           submit: 'Update',
           delete: 'Delete',
         },

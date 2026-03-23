@@ -1,0 +1,30 @@
+extends ../layouts/application.pug
+
+block content
+  h1.mt-5.mb-4= t('views.tasks.index.title')
+
+  a.btn.btn-primary.mb-3(href=route('newTask'))= t('views.tasks.index.createLink')
+  table.table.table-striped
+    thead
+      tr
+        th= t('views.tasks.id')
+        th= t('views.tasks.name')
+        th= t('views.tasks.status')
+        th= t('views.tasks.creator')
+        th= t('views.tasks.executor')
+        th= t('views.tasks.createdAt')
+        th= t('views.tasks.actions')
+    tbody
+      each task in tasks
+        tr
+          td= task.id
+          td
+            a(href=route('showTask', { id: task.id }))= task.name
+          td= task.status ? task.status.name : ''
+          td= task.creator ? `${task.creator.firstName} ${task.creator.lastName}` : ''
+          td= task.executor ? `${task.executor.firstName} ${task.executor.lastName}` : ''
+          td= formatDate(task.created_at)
+          td
+            .d-inline-flex.gap-2
+              a.btn.btn-sm.btn-primary(href=route('editTask', { id: task.id }), style="width: 5rem")= t('views.tasks.index.edit')
+              +buttonTo(route('deleteTask', { id: task.id }), 'delete')(class="btn btn-sm btn-danger" style="width: 5rem" value=t('views.tasks.index.delete'))

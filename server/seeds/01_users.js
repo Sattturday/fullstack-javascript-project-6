@@ -1,7 +1,11 @@
 import encrypt from '../lib/secure.cjs'
 
 export async function seed(knex) {
-  await knex('users').del()
+  await knex('tasks_labels').truncate()
+  await knex('tasks').truncate()
+  await knex('labels').truncate()
+  await knex('task_statuses').truncate()
+  await knex('users').truncate()
 
   const passwordDigest = encrypt('123')
 
