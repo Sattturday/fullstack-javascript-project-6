@@ -14,12 +14,13 @@ import Knex from 'knex'
 import { Model } from 'objection'
 import i18next from 'i18next'
 
+import * as knexConfig from '../knexfile.js'
 import ru from './locales/ru.js'
 import en from './locales/en.js'
 import addRoutes from './routes/index.js'
 import getHelpers from './helpers/index.js'
-import * as knexConfig from '../knexfile.js'
 import User from './models/User.cjs'
+import TaskStatus from './models/TaskStatus.cjs'
 import FormStrategy from './lib/passportStrategies/FormStrategy.js'
 
 const __dirname = fileURLToPath(path.dirname(import.meta.url))
@@ -101,7 +102,6 @@ const registerPlugins = async (app) => {
       failureRedirect: app.reverse('newSession'),
       failureFlash: i18next.t('flash.authError'),
     },
-  // @ts-ignore
   )(...args))
 
   await app.register(fastifyMethodOverride)
@@ -114,7 +114,7 @@ const setupDb = (app) => {
 
   app.decorate('objection', {
     knex,
-    models: { user: User },
+    models: { user: User, taskStatus: TaskStatus },
   })
 
   app.addHook('onClose', async () => {

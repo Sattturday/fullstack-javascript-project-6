@@ -25,11 +25,26 @@ export default {
           success: 'Пользователь успешно удалён',
         },
       },
+      statuses: {
+        create: {
+          success: 'Статус успешно создан',
+          error: 'Не удалось создать статус',
+        },
+        edit: {
+          success: 'Статус успешно изменён',
+          error: 'Не удалось изменить статус',
+        },
+        delete: {
+          success: 'Статус успешно удалён',
+          hasTasks: 'Нельзя удалить статус, связанный с задачей',
+        },
+      },
       authError: 'Доступ запрещён! Пожалуйста, авторизируйтесь.',
     },
     layouts: {
       application: {
         users: 'Пользователи',
+        statuses: 'Статусы',
         signIn: 'Вход',
         signUp: 'Регистрация',
         signOut: 'Выход',
@@ -61,6 +76,27 @@ export default {
           submit: 'Изменить',
         },
         delete: 'Удалить',
+      },
+      statuses: {
+        id: 'ID',
+        name: 'Наименование',
+        createdAt: 'Дата создания',
+        actions: 'Действия',
+        index: {
+          title: 'Статусы',
+          createLink: 'Создать статус',
+          edit: 'Изменить',
+          delete: 'Удалить',
+        },
+        new: {
+          title: 'Создание статуса',
+          submit: 'Создать',
+        },
+        edit: {
+          title: 'Изменение статуса',
+          submit: 'Изменить',
+          delete: 'Удалить',
+        },
       },
       welcome: {
         index: {

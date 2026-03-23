@@ -1,0 +1,8 @@
+extends ../layouts/application.pug
+
+block content
+  h1= t('views.statuses.new.title')
+
+  +formFor()(action=route('statuses') method='post')
+    +input(status, 'name', errors, 'statuses')(type="text")
+    +submit(status)(value=t('views.statuses.new.submit'))

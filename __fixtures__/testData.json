@@ -1,4 +1,12 @@
 {
+  "statuses": {
+    "new": {
+      "name": "Draft"
+    },
+    "existing": {
+      "name": "New"
+    }
+  },
   "users": {
     "new": {
       "firstName": "Malika",

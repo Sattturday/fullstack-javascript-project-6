@@ -1,0 +1,23 @@
+extends ../layouts/application.pug
+
+block content
+  h1.mt-5.mb-4= t('views.statuses.index.title')
+
+  a.btn.btn-primary.mb-3(href=route('newStatus'))= t('views.statuses.index.createLink')
+  table.table.table-striped
+    thead
+      tr
+        th= t('views.statuses.id')
+        th= t('views.statuses.name')
+        th= t('views.statuses.createdAt')
+        th= t('views.statuses.actions')
+    tbody
+      each status in statuses
+        tr
+          td= status.id
+          td= status.name
+          td= formatDate(status.created_at)
+          td
+            .d-inline-flex.gap-2
+              a.btn.btn-sm.btn-primary(href=route('editStatus', { id: status.id }), style="width: 5rem")= t('views.statuses.index.edit')
+              +buttonTo(route('deleteStatus', { id: status.id }), 'delete')(class="btn btn-sm btn-danger" style="width: 5rem" value=t('views.statuses.index.delete'))
