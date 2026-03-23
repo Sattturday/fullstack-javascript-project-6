@@ -105,7 +105,8 @@ describe('test statuses CRUD', () => {
 
   it('delete', async () => {
     const cookie = await signIn(testData.users.existing)
-    const status = await models.taskStatus.query().findOne({ name: testData.statuses.existing.name })
+    const status = await models.taskStatus.query().findOne({ name: 'Done' })
+    await knex('tasks').where('statusId', status.id).del()
 
     const response = await app.inject({
       method: 'DELETE',

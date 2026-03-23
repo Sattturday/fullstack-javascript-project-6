@@ -1,4 +1,15 @@
 {
+  "tasks": {
+    "new": {
+      "name": "New test task",
+      "description": "Task description",
+      "statusId": 1,
+      "executorId": 1
+    },
+    "existing": {
+      "name": "Fix homepage layout"
+    }
+  },
   "statuses": {
     "new": {
       "name": "Draft"

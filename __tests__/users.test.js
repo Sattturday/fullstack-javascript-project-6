@@ -113,6 +113,8 @@ describe('test users CRUD', () => {
     const params = testData.users.existing
     const cookie = await signIn(params)
     const user = await models.user.query().findOne({ email: params.email })
+    // Remove tasks referencing this user so delete is allowed
+    await knex('tasks').where('creatorId', user.id).orWhere('executorId', user.id).del()
 
     const response = await app.inject({
       method: 'DELETE',
