@@ -10,7 +10,7 @@
     "build": "webpack --mode=production",
     "test": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' jest",
     "lint": "eslint .",
-    "postinstall": "sed -i 's/async (fastify, opts, next)/async (fastify, opts)/' node_modules/fastify-method-override/lib/index.js && sed -i 's/  next();//' node_modules/fastify-method-override/lib/index.js"
+    "postinstall": "test -f node_modules/fastify-method-override/lib/index.js && sed -i 's/async (fastify, opts, next)/async (fastify, opts)/' node_modules/fastify-method-override/lib/index.js && sed -i 's/  next();//' node_modules/fastify-method-override/lib/index.js || true"
   },
   "dependencies": {
     "@fastify/flash": "^6.0.3",
