@@ -11,29 +11,29 @@ block content
         .row.g-3.mb-3
           .col
             .form-floating
-              select#data_status.form-select(name='statusId')
+              select#filterStatus.form-select(name='statusId')
                 option(value='')
                 each s in statuses
                   option(value=s.id selected=(filter && filter.statusId ? String(s.id) === String(filter.statusId) : false))= s.name
-              label(for='data_status')= t('views.tasks.index.filterStatus')
+              label(for='filterStatus')= t('views.tasks.index.filterStatus')
           .col
             .form-floating
-              select#data_executor.form-select(name='executorId')
+              select#filterExecutor.form-select(name='executorId')
                 option(value='')
                 each u in users
                   option(value=u.id selected=(filter && filter.executorId ? String(u.id) === String(filter.executorId) : false))= `${u.firstName} ${u.lastName}`
-              label(for='data_executor')= t('views.tasks.index.filterExecutor')
+              label(for='filterExecutor')= t('views.tasks.index.filterExecutor')
           .col
             .form-floating
-              select#data_label.form-select(name='labelId')
+              select#filterLabel.form-select(name='labelId')
                 option(value='')
                 each l in labels
                   option(value=l.id selected=(filter && filter.labelId ? String(l.id) === String(filter.labelId) : false))= l.name
-              label(for='data_label')= t('views.tasks.index.filterLabel')
+              label(for='filterLabel')= t('views.tasks.index.filterLabel')
         .mb-3
           .form-check
-            input#data_isCreatorUser.form-check-input(type='checkbox' name='isCreatorUser' value='on' checked=(filter && filter.isCreatorUser === 'on'))
-            label.form-check-label(for='data_isCreatorUser')= t('views.tasks.index.filterIsCreatorUser')
+            input#filterIsCreatorUser.form-check-input(type='checkbox' name='isCreatorUser' value='on' checked=(filter && filter.isCreatorUser === 'on'))
+            label.form-check-label(for='filterIsCreatorUser')= t('views.tasks.index.filterIsCreatorUser')
         input.btn.btn-primary(type='submit' value=t('views.tasks.index.filterSubmit'))
 
   table.table.table-striped
