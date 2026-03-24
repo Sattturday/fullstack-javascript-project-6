@@ -42,7 +42,16 @@ const setUpViews = (app) => {
     templates: path.join(__dirname, '..', 'server', 'views'),
   })
 
+  // preHandler reads flash from the PREVIOUS request (redirect flow).
+  // render() reads flash set by the CURRENT handler (validation error flow).
+  // Handlers must call either render() or redirect(), never both.
   app.decorateReply('render', function render(viewPath, locals) {
+    if (!this.locals) this.locals = { flash: {} }
+    if (!this.locals.flash) this.locals.flash = {}
+    const freshFlash = this.flash ? (this.flash() || {}) : {}
+    Object.entries(freshFlash).forEach(([type, messages]) => {
+      this.locals.flash[type] = (this.locals.flash[type] || []).concat(messages)
+    })
     this.view(viewPath, { ...locals, reply: this })
   })
 }
@@ -73,7 +82,7 @@ const addHooks = (app) => {
       isAuthenticated: () => req.isAuthenticated(),
       currentUser: req.user,
       t: key => i18next.t(key),
-      flash: reply.flash ? reply.flash() : {},
+      flash: reply.flash ? (reply.flash() || {}) : {},
     }
   })
 }

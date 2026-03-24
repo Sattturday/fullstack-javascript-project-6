@@ -44,7 +44,7 @@ export default (app) => {
       const task = new app.objection.models.task()
       const data = {
         ...req.body.data,
-        statusId: Number(req.body.data.statusId),
+        statusId: req.body.data.statusId ? Number(req.body.data.statusId) : undefined,
         creatorId: req.user.id,
         executorId: req.body.data.executorId ? Number(req.body.data.executorId) : null,
       }
@@ -104,7 +104,7 @@ export default (app) => {
       }
       const data = {
         ...req.body.data,
-        statusId: Number(req.body.data.statusId),
+        statusId: req.body.data.statusId ? Number(req.body.data.statusId) : undefined,
         creatorId: task.creatorId,
         executorId: req.body.data.executorId ? Number(req.body.data.executorId) : null,
       }
