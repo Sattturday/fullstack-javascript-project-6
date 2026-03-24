@@ -143,6 +143,11 @@ export default {
           createLink: 'Создать задачу',
           edit: 'Изменить',
           delete: 'Удалить',
+          filterStatus: 'Статус',
+          filterExecutor: 'Исполнитель',
+          filterLabel: 'Метка',
+          filterIsCreatorUser: 'Только мои задачи',
+          filterSubmit: 'Показать',
         },
         new: {
           title: 'Создание задачи',

@@ -143,6 +143,11 @@ export default {
           createLink: 'Create Task',
           edit: 'Edit',
           delete: 'Delete',
+          filterStatus: 'Status',
+          filterExecutor: 'Executor',
+          filterLabel: 'Label',
+          filterIsCreatorUser: 'Only my tasks',
+          filterSubmit: 'Show',
         },
         new: {
           title: 'Create Task',

@@ -4,6 +4,38 @@ block content
   h1.mt-5.mb-4= t('views.tasks.index.title')
 
   a.btn.btn-primary.mb-3(href=route('newTask'))= t('views.tasks.index.createLink')
+
+  .card.mb-4
+    .card-body
+      form(method='GET' action=route('tasks'))
+        .row.g-3.mb-3
+          .col
+            .form-floating
+              select#filterStatus.form-select(name='statusId')
+                option(value='')
+                each s in statuses
+                  option(value=s.id selected=(filter && filter.statusId ? String(s.id) === String(filter.statusId) : false))= s.name
+              label(for='filterStatus')= t('views.tasks.index.filterStatus')
+          .col
+            .form-floating
+              select#filterExecutor.form-select(name='executorId')
+                option(value='')
+                each u in users
+                  option(value=u.id selected=(filter && filter.executorId ? String(u.id) === String(filter.executorId) : false))= `${u.firstName} ${u.lastName}`
+              label(for='filterExecutor')= t('views.tasks.index.filterExecutor')
+          .col
+            .form-floating
+              select#filterLabel.form-select(name='labelId')
+                option(value='')
+                each l in labels
+                  option(value=l.id selected=(filter && filter.labelId ? String(l.id) === String(filter.labelId) : false))= l.name
+              label(for='filterLabel')= t('views.tasks.index.filterLabel')
+        .mb-3
+          .form-check
+            input#filterIsCreatorUser.form-check-input(type='checkbox' name='isCreatorUser' value='on' checked=(filter && filter.isCreatorUser === 'on'))
+            label.form-check-label(for='filterIsCreatorUser')= t('views.tasks.index.filterIsCreatorUser')
+        input.btn.btn-primary(type='submit' value=t('views.tasks.index.filterSubmit'))
+
   table.table.table-striped
     thead
       tr
@@ -26,5 +58,5 @@ block content
           td= formatDate(task.created_at)
           td
             .d-inline-flex.gap-2
-              a.btn.btn-sm.btn-primary(href=route('editTask', { id: task.id }), style="width: 5rem")= t('views.tasks.index.edit')
-              +buttonTo(route('deleteTask', { id: task.id }), 'delete')(class="btn btn-sm btn-danger" style="width: 5rem" value=t('views.tasks.index.delete'))
+              a.btn.btn-sm.btn-outline-primary(href=route('editTask', { id: task.id }))= t('views.tasks.index.edit')
+              +buttonTo(route('deleteTask', { id: task.id }), 'delete')(class="btn btn-sm btn-outline-danger" value=t('views.tasks.index.delete'))

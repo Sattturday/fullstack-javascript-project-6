@@ -3,9 +3,33 @@ import i18next from 'i18next'
 export default (app) => {
   app
     .get('/tasks', { name: 'tasks' }, async (req, reply) => {
-      const tasks = await app.objection.models.task.query()
+      const { statusId, executorId, labelId, isCreatorUser } = req.query
+
+      const query = app.objection.models.task.query()
         .withGraphJoined('[status, creator, executor, labels]')
-      reply.render('tasks/index', { tasks })
+
+      if (statusId) {
+        query.where('tasks.statusId', statusId)
+      }
+      if (executorId) {
+        query.where('tasks.executorId', executorId)
+      }
+      if (labelId) {
+        query.where('labels.id', labelId)
+      }
+      if (isCreatorUser === 'on' && req.user) {
+        query.where('tasks.creatorId', req.user.id)
+      }
+
+      const [tasks, statuses, users, labels] = await Promise.all([
+        query,
+        app.objection.models.taskStatus.query(),
+        app.objection.models.user.query(),
+        app.objection.models.label.query(),
+      ])
+
+      const filter = { statusId, executorId, labelId, isCreatorUser }
+      reply.render('tasks/index', { tasks, statuses, users, labels, filter })
       return reply
     })
     .get('/tasks/new', { name: 'newTask', preValidation: app.authenticate }, async (req, reply) => {
