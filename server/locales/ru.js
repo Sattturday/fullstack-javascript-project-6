@@ -36,7 +36,7 @@ export default {
         },
         delete: {
           success: 'Статус успешно удалён',
-          hasTasks: 'Нельзя удалить статус, связанный с задачей',
+          hasTasks: 'Не удалось удалить статус',
         },
       },
       tasks: {
@@ -53,6 +53,20 @@ export default {
           accessError: 'Задачу может удалить только её автор',
         },
       },
+      labels: {
+        create: {
+          success: 'Метка успешно создана',
+          error: 'Не удалось создать метку',
+        },
+        edit: {
+          success: 'Метка успешно изменена',
+          error: 'Не удалось изменить метку',
+        },
+        delete: {
+          success: 'Метка успешно удалена',
+          hasTasks: 'Не удалось удалить метку',
+        },
+      },
       authError: 'Доступ запрещён! Пожалуйста, авторизируйтесь.',
     },
     layouts: {
@@ -60,6 +74,7 @@ export default {
         users: 'Пользователи',
         statuses: 'Статусы',
         tasks: 'Задачи',
+        labels: 'Метки',
         signIn: 'Вход',
         signUp: 'Регистрация',
         signOut: 'Выход',
@@ -120,6 +135,7 @@ export default {
         status: 'Статус',
         creator: 'Автор',
         executor: 'Исполнитель',
+        labels: 'Метки',
         createdAt: 'Дата создания',
         actions: 'Действия',
         index: {
@@ -137,6 +153,27 @@ export default {
         },
         edit: {
           title: 'Изменение задачи',
+          submit: 'Изменить',
+          delete: 'Удалить',
+        },
+      },
+      labels: {
+        id: 'ID',
+        name: 'Наименование',
+        createdAt: 'Дата создания',
+        actions: 'Действия',
+        index: {
+          title: 'Метки',
+          createLink: 'Создать метку',
+          edit: 'Изменить',
+          delete: 'Удалить',
+        },
+        new: {
+          title: 'Создание метки',
+          submit: 'Создать',
+        },
+        edit: {
+          title: 'Изменение метки',
           submit: 'Изменить',
           delete: 'Удалить',
         },

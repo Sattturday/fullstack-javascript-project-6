@@ -4,7 +4,7 @@ export default (app) => {
   app
     .get('/tasks', { name: 'tasks' }, async (req, reply) => {
       const tasks = await app.objection.models.task.query()
-        .withGraphJoined('[status, creator, executor]')
+        .withGraphJoined('[status, creator, executor, labels]')
       reply.render('tasks/index', { tasks })
       return reply
     })
@@ -12,7 +12,8 @@ export default (app) => {
       const task = new app.objection.models.task()
       const statuses = await app.objection.models.taskStatus.query()
       const users = await app.objection.models.user.query()
-      reply.render('tasks/new', { task, statuses, users })
+      const labels = await app.objection.models.label.query()
+      reply.render('tasks/new', { task, statuses, users, labels })
       return reply
     })
     .post('/tasks', { name: 'createTask', preValidation: app.authenticate }, async (req, reply) => {
@@ -27,15 +28,24 @@ export default (app) => {
 
       try {
         const validTask = await app.objection.models.task.fromJson(data)
-        await app.objection.models.task.query().insert(validTask)
+        const labelIds = [].concat(req.body.data.labels || []).map(Number).filter(id => Number.isInteger(id) && id > 0)
+
+        await app.objection.knex.transaction(async (trx) => {
+          const insertedTask = await app.objection.models.task.query(trx).insert(validTask)
+          if (labelIds.length > 0) {
+            await trx('tasks_labels').insert(labelIds.map(labelId => ({ taskId: insertedTask.id, labelId })))
+          }
+        })
+
         req.flash('info', i18next.t('flash.tasks.create.success'))
         reply.redirect(app.reverse('tasks'))
       }
-      catch ({ data: errors }) {
+      catch (error) {
         req.flash('error', i18next.t('flash.tasks.create.error'))
         const statuses = await app.objection.models.taskStatus.query()
         const users = await app.objection.models.user.query()
-        reply.render('tasks/new', { task, statuses, users, errors })
+        const labels = await app.objection.models.label.query()
+        reply.render('tasks/new', { task, statuses, users, labels, errors: error.data })
       }
 
       return reply
@@ -44,21 +54,30 @@ export default (app) => {
       const { id } = req.params
       const task = await app.objection.models.task.query()
         .findById(id)
-        .withGraphJoined('[status, creator, executor]')
+        .withGraphJoined('[status, creator, executor, labels]')
+      if (!task) {
+        reply.code(404)
+        return reply
+      }
       reply.render('tasks/show', { task })
       return reply
     })
     .get('/tasks/:id/edit', { name: 'editTask', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params
-      const task = await app.objection.models.task.query().findById(id)
+      const task = await app.objection.models.task.query().findById(id).withGraphJoined('labels')
       const statuses = await app.objection.models.taskStatus.query()
       const users = await app.objection.models.user.query()
-      reply.render('tasks/edit', { task, statuses, users })
+      const labels = await app.objection.models.label.query()
+      reply.render('tasks/edit', { task, statuses, users, labels })
       return reply
     })
     .patch('/tasks/:id', { name: 'updateTask', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params
       const task = await app.objection.models.task.query().findById(id)
+      if (!task) {
+        reply.code(404)
+        return reply
+      }
       const data = {
         ...req.body.data,
         statusId: Number(req.body.data.statusId),
@@ -68,15 +87,25 @@ export default (app) => {
 
       try {
         const validData = await app.objection.models.task.fromJson(data)
-        await task.$query().patch(validData)
+        const labelIds = [].concat(req.body.data.labels || []).map(Number).filter(id => Number.isInteger(id) && id > 0)
+
+        await app.objection.knex.transaction(async (trx) => {
+          await task.$query(trx).patch(validData)
+          await trx('tasks_labels').where('taskId', id).del()
+          if (labelIds.length > 0) {
+            await trx('tasks_labels').insert(labelIds.map(labelId => ({ taskId: Number(id), labelId })))
+          }
+        })
+
         req.flash('info', i18next.t('flash.tasks.edit.success'))
         reply.redirect(app.reverse('tasks'))
       }
-      catch ({ data: errors }) {
+      catch (error) {
         req.flash('error', i18next.t('flash.tasks.edit.error'))
         const statuses = await app.objection.models.taskStatus.query()
         const users = await app.objection.models.user.query()
-        reply.render('tasks/edit', { task, statuses, users, errors })
+        const labels = await app.objection.models.label.query()
+        reply.render('tasks/edit', { task, statuses, users, labels, errors: error.data })
       }
 
       return reply
@@ -84,6 +113,10 @@ export default (app) => {
     .delete('/tasks/:id', { name: 'deleteTask', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params
       const task = await app.objection.models.task.query().findById(id)
+      if (!task) {
+        reply.code(404)
+        return reply
+      }
 
       if (task.creatorId !== req.user.id) {
         req.flash('error', i18next.t('flash.tasks.delete.accessError'))

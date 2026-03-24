@@ -1,25 +1,34 @@
 extends ../layouts/application.pug
 
 block content
-  h1.mt-5.mb-4= task.name
-
-  table.table
-    tbody
-      tr
-        td.fw-bold= t('views.tasks.name')
-        td= task.name
-      tr
-        td.fw-bold= t('views.tasks.status')
-        td= task.status ? task.status.name : ''
-      tr
-        td.fw-bold= t('views.tasks.creator')
-        td= task.creator ? `${task.creator.firstName} ${task.creator.lastName}` : ''
-      tr
-        td.fw-bold= t('views.tasks.executor')
-        td= task.executor ? `${task.executor.firstName} ${task.executor.lastName}` : ''
-      tr
-        td.fw-bold= t('views.tasks.createdAt')
-        td= formatDate(task.created_at)
-
-  if reply.locals.isAuthenticated()
-    a.btn.btn-primary(href=route('editTask', { id: task.id }))= t('views.tasks.show.edit')
+  .card.mt-5
+    .card-header
+      h3.card-title.mb-0= task.name
+    .card-body
+      if task.description
+        p.card-text= task.description
+      .row.mb-2
+        .col-sm-3.fw-bold= t('views.tasks.status')
+        .col-sm-9
+          if task.status
+            span.badge.bg-primary= task.status.name
+      .row.mb-2
+        .col-sm-3.fw-bold= t('views.tasks.creator')
+        .col-sm-9= task.creator ? `${task.creator.firstName} ${task.creator.lastName}` : ''
+      .row.mb-2
+        .col-sm-3.fw-bold= t('views.tasks.executor')
+        .col-sm-9= task.executor ? `${task.executor.firstName} ${task.executor.lastName}` : ''
+      if (task.labels || []).length > 0
+        .row.mb-2
+          .col-sm-3.fw-bold= t('views.tasks.labels')
+          .col-sm-9
+            each label in task.labels
+              span.badge.bg-secondary.me-1= label.name
+      .row.mb-2
+        .col-sm-3.fw-bold= t('views.tasks.createdAt')
+        .col-sm-9= formatDate(task.created_at)
+    if reply.locals.isAuthenticated()
+      .card-footer
+        .d-inline-flex.gap-2
+          a.btn.btn-primary(href=route('editTask', { id: task.id }), style="width: 7rem")= t('views.tasks.show.edit')
+          +buttonTo(route('deleteTask', { id: task.id }), 'delete')(class="btn btn-danger" style="width: 7rem" value=t('views.tasks.edit.delete'))

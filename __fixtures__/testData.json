@@ -18,6 +18,14 @@
       "name": "New"
     }
   },
+  "labels": {
+    "new": {
+      "name": "urgent"
+    },
+    "existing": {
+      "name": "bug"
+    }
+  },
   "users": {
     "new": {
       "firstName": "Malika",

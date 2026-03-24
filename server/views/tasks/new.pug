@@ -19,4 +19,9 @@ block content
         option(value='')
         each u in users
           option(value=u.id, selected=u.id === _.get(task, 'executorId'))= `${u.firstName} ${u.lastName}`
+    .mb-3
+      label.form-label(for="data_labels")= t('views.tasks.labels')
+      select#data_labels.form-control(name="data[labels][]" multiple)
+        each l in labels
+          option(value=l.id)= l.name
     +submit(task)(value=t('views.tasks.new.submit'))

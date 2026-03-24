@@ -53,6 +53,20 @@ export default {
           accessError: 'Only the creator can delete this task',
         },
       },
+      labels: {
+        create: {
+          success: 'Label successfully created',
+          error: 'Failed to create label',
+        },
+        edit: {
+          success: 'Label successfully updated',
+          error: 'Failed to update label',
+        },
+        delete: {
+          success: 'Label successfully deleted',
+          hasTasks: 'Cannot delete label linked to a task',
+        },
+      },
       authError: 'Access denied! Please login',
     },
     layouts: {
@@ -60,6 +74,7 @@ export default {
         users: 'Users',
         statuses: 'Statuses',
         tasks: 'Tasks',
+        labels: 'Labels',
         signIn: 'Login',
         signUp: 'Register',
         signOut: 'Logout',
@@ -120,6 +135,7 @@ export default {
         status: 'Status',
         creator: 'Creator',
         executor: 'Executor',
+        labels: 'Labels',
         createdAt: 'Created At',
         actions: 'Actions',
         index: {
@@ -137,6 +153,27 @@ export default {
         },
         edit: {
           title: 'Edit Task',
+          submit: 'Update',
+          delete: 'Delete',
+        },
+      },
+      labels: {
+        id: 'ID',
+        name: 'Name',
+        createdAt: 'Created At',
+        actions: 'Actions',
+        index: {
+          title: 'Labels',
+          createLink: 'Create Label',
+          edit: 'Edit',
+          delete: 'Delete',
+        },
+        new: {
+          title: 'Create Label',
+          submit: 'Create',
+        },
+        edit: {
+          title: 'Edit Label',
           submit: 'Update',
           delete: 'Delete',
         },
