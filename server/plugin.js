@@ -73,7 +73,9 @@ const addHooks = (app) => {
       isAuthenticated: () => req.isAuthenticated(),
       currentUser: req.user,
       t: key => i18next.t(key),
-      flash: reply.flash ? reply.flash() : {},
+      get flash() {
+        return reply.flash ? reply.flash() : {}
+      },
     }
   })
 }

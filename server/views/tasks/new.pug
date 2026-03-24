@@ -8,11 +8,15 @@ block content
     .mb-3
       label.form-label(for="data_description")= t('views.tasks.description')
       textarea#data_description.form-control(name="data[description]")= _.get(task, 'description', '')
+    - const statusErrors = _.get(errors, 'statusId')
     .mb-3
       label.form-label(for="data_statusId")= t('views.tasks.status')
-      select#data_statusId.form-control(name="data[statusId]")
+      select#data_statusId(name="data[statusId]" class=`form-control${statusErrors ? ' is-invalid' : ''}`)
+        option(value='')
         each s in statuses
           option(value=s.id, selected=s.id === _.get(task, 'statusId'))= s.name
+      if statusErrors
+        .invalid-feedback= statusErrors.map(({ message }) => message).join('. ')
     .mb-3
       label.form-label(for="data_executorId")= t('views.tasks.executor')
       select#data_executorId.form-control(name="data[executorId]")
