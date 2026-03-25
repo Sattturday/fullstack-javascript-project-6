@@ -1,15 +1,15 @@
-import path from 'path'
-import { fileURLToPath } from 'url'
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const migrations = {
   directory: path.join(__dirname, 'server', 'migrations'),
-}
+};
 
 const seeds = {
   directory: path.join(__dirname, 'server', 'seeds'),
-}
+};
 
 export const development = {
   client: 'sqlite3',
@@ -19,7 +19,7 @@ export const development = {
   useNullAsDefault: true,
   migrations,
   seeds,
-}
+};
 
 export const test = {
   client: 'sqlite3',
@@ -28,11 +28,11 @@ export const test = {
   // debug: true,
   migrations,
   seeds,
-}
+};
 
 export const production = {
   client: 'pg',
   connection: process.env.DATABASE_URL,
   migrations,
   seeds,
-}
+};

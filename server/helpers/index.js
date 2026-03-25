@@ -1,31 +1,31 @@
-import i18next from 'i18next'
-import _ from 'lodash'
+import i18next from 'i18next';
+import _ from 'lodash';
 
-export default app => ({
+export default (app) => ({
   route: (name, params) => {
     if (params) {
       const stringParams = Object.fromEntries(
         Object.entries(params).map(([k, v]) => [k, String(v)]),
-      )
-      return app.reverse(name, stringParams)
+      );
+      return app.reverse(name, stringParams);
     }
-    return app.reverse(name)
+    return app.reverse(name);
   },
-  t: key => i18next.t(key),
+  t: (key) => i18next.t(key),
   _,
   getAlertClass(type) {
     switch (type) {
       case 'error':
-        return 'danger'
+        return 'danger';
       case 'success':
-        return 'success'
+        return 'success';
       case 'info':
-        return 'info'
+        return 'info';
       default:
-        throw new Error(`Unknown flash type: '${type}'`)
+        throw new Error(`Unknown flash type: '${type}'`);
     }
   },
   formatDate(str) {
-    return new Date(str).toLocaleString()
+    return new Date(str).toLocaleString();
   },
-})
+});

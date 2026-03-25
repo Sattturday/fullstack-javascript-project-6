@@ -1,25 +1,27 @@
-import { URL } from 'url'
-import fs from 'fs'
-import path from 'path'
+import { URL } from 'url';
+import fs from 'fs';
+import path from 'path';
 
-const getFixturePath = filename => path.join('..', '..', '__fixtures__', filename)
-const readFixture = filename => fs.readFileSync(new URL(getFixturePath(filename), import.meta.url), 'utf-8').trim()
-const getFixtureData = filename => JSON.parse(readFixture(filename))
+const getFixturePath = (filename) => path.join('..', '..', '__fixtures__', filename);
+const readFixture = (filename) => fs.readFileSync(new URL(getFixturePath(filename), import.meta.url), 'utf-8').trim();
+const getFixtureData = (filename) => JSON.parse(readFixture(filename));
 
-export const getTestData = () => getFixtureData('testData.json')
+export const getTestData = () => getFixtureData('testData.json');
 
 export const cleanDb = async (knex) => {
-  const tables = ['tasks_labels', 'tasks', 'labels', 'task_statuses', 'users']
+  const tables = ['tasks_labels', 'tasks', 'labels', 'task_statuses', 'users'];
+  // eslint-disable-next-line no-restricted-syntax
   for (const table of tables) {
-    await knex(table).truncate()
+    // eslint-disable-next-line no-await-in-loop
+    await knex(table).truncate();
   }
-}
+};
 
 export const prepareData = async (app) => {
-  const { knex } = app.objection
+  const { knex } = app.objection;
 
-  await knex('users').insert(getFixtureData('users.json'))
-  await knex('task_statuses').insert(getFixtureData('statuses.json'))
-  await knex('tasks').insert(getFixtureData('tasks.json'))
-  await knex('labels').insert(getFixtureData('labels.json'))
-}
+  await knex('users').insert(getFixtureData('users.json'));
+  await knex('task_statuses').insert(getFixtureData('statuses.json'));
+  await knex('tasks').insert(getFixtureData('tasks.json'));
+  await knex('labels').insert(getFixtureData('labels.json'));
+};

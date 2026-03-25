@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/prefer-default-export
 export async function seed(knex) {
   await knex('tasks_labels').insert([
     { taskId: 1, labelId: 2 }, // Setup project → Feature
@@ -5,5 +6,5 @@ export async function seed(knex) {
     { taskId: 2, labelId: 3 }, // Implement login → Urgent
     { taskId: 3, labelId: 2 }, // Create tasks CRUD → Feature
     { taskId: 3, labelId: 4 }, // Create tasks CRUD → Low Priority
-  ])
+  ]);
 }
