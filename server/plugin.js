@@ -12,6 +12,7 @@ import qs from 'qs';
 import Pug from 'pug';
 import Knex from 'knex';
 import { Model } from 'objection';
+import Rollbar from 'rollbar';
 import i18next from 'i18next';
 
 import * as knexConfig from '../knexfile.js';
@@ -136,6 +137,23 @@ const setupDb = (app) => {
   });
 };
 
+const setupRollbar = (app) => {
+  const rollbarToken = process.env.ROLLBAR_TOKEN;
+  if (!rollbarToken) return;
+
+  const rollbar = new Rollbar({
+    accessToken: rollbarToken,
+    captureUncaught: true,
+    captureUnhandledRejections: true,
+    enabled: Boolean(rollbarToken),
+  });
+
+  app.setErrorHandler((error, req, reply) => {
+    rollbar.error(error, req);
+    reply.send(error);
+  });
+};
+
 export const options = {
   exposeHeadRoutes: false,
 };
@@ -150,6 +168,7 @@ export default async (app, _options) => {
   setUpStaticAssets(app);
   addRoutes(app);
   addHooks(app);
+  setupRollbar(app);
 
   return app;
 };
