@@ -61,14 +61,14 @@ export default (app) => {
     .delete('/labels/:id', { name: 'deleteLabel', preValidation: app.authenticate }, async (req, reply) => {
       const { id } = req.params;
 
-      const tasksLabels = await app.objection.knex('tasks_labels').where('labelId', id);
-      if (tasksLabels.length > 0) {
+      const label = await app.objection.models.label.query().findById(id).withGraphJoined('tasks');
+      if (label.tasks.length > 0) {
         req.flash('error', i18next.t('flash.labels.delete.hasTasks'));
         reply.redirect(app.reverse('labels'));
         return reply;
       }
 
-      await app.objection.models.label.query().deleteById(id);
+      await label.$query().delete();
       req.flash('info', i18next.t('flash.labels.delete.success'));
       reply.redirect(app.reverse('labels'));
       return reply;

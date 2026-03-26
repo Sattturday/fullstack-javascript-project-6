@@ -7,9 +7,9 @@ export async function up(knex) {
     table.integer('creatorId').unsigned().notNullable();
     table.integer('executorId').unsigned();
 
-    table.foreign('statusId').references('task_statuses.id').onDelete('RESTRICT');
-    table.foreign('creatorId').references('users.id').onDelete('RESTRICT');
-    table.foreign('executorId').references('users.id').onDelete('SET NULL');
+    table.foreign('statusId').references('task_statuses.id');
+    table.foreign('creatorId').references('users.id');
+    table.foreign('executorId').references('users.id');
 
     table.timestamps(true, true);
   });
